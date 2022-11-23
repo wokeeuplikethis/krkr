@@ -24,6 +24,8 @@ bool isNumeric(string const& str) //
 
 void filesavemenu(Book array[], int Size)
 {
+    checkFile.exceptions(ifstream::badbit | ifstream::failbit);
+    thirdFile.exceptions(ofstream::badbit | ofstream::failbit);
     string inputValue;
     int thirdChoice = 0;
     string secondFileAddress = "";
@@ -32,100 +34,106 @@ void filesavemenu(Book array[], int Size)
         cout << "2 - Продолжить без сохранения" << endl;
         while (true)
         {
-         getline(cin, inputValue);
-         if (!(isNumeric(inputValue)))
-             {
-              cout << "Введено не число...попробуй ещё раз!" << endl;
-               continue;
-             }
-         else {
-            thirdChoice = stoi(inputValue);
-            break;
-              }
-         }
-         switch (thirdChoice) {
-         case saveDataOld:         
-             while (true) {
-                 cout << "Название файла:" << endl;
-                 getline(cin, secondName);
-                 try {
-                     checkFile.open(secondName);
-                     while (checkFile.is_open()) {
-                         cout << "Файл с таким именем создан!" << endl;
-                         cout << "1 - Сохранить в этот файл" << endl;
-                         cout << "2 и другие числа - Ввести новое имя файла" << endl;
-                         while (true)//proverka
-                         {
-                             getline(cin, inputValue);
-                             if (!(isNumeric(inputValue)))
-                             {
-                                 cout << "Введено не число...Попробуй ещё раз!" << endl;
-                                 continue;
-                             }
-                             else
-                             {
-                                 choi = stoi(inputValue);
-                                 break;
-                             }
-                         }
-                         if (choi == 1)
-                         {
-                             thirdFile.open(secondName);
-                             thirdFile << Size << endl;;
-                             for (int w = 0; w < Size; w++) {
-                                 thirdFile << array[w].getBookName() << endl << array[w].getName() << endl << array[w].getLastName() << endl;
-                                 thirdFile << array[w].getPatronymic() << endl << array[w].getPublishingOffice() << endl << array[w].getYear() << endl;
-                             }
-                             cout << "Файл сохранён" << endl;
-                             thirdFile.close();
-                         }
-                         else {
-                             checkFile.close();
-                             cout << "Название нового файла:" << endl;
-                             //cin.get();
-                             getline(cin, thirdFileAdress);
-                             thirdFile.open(thirdFileAdress);
-                             thirdFile << Size << endl;
-                             for (int q = 0; q < Size; q++) {
-                                 thirdFile << array[q].getBookName() << endl << array[q].getName() << endl << array[q].getLastName() << endl;
-                                 thirdFile << array[q].getPatronymic() << endl << array[q].getPublishingOffice() << endl << array[q].getYear() << endl;
-                             }
-                             cout << "Файл сохранён" << endl;
-                             thirdFile.close();
-                             break;
-                         };
-                     }
-                 }
-                 catch (const exception&)
-                 {
-                     try
-                     {
-                         thirdFile.open(secondName);
-                         thirdFile << Size << endl;
-                         for (int q = 0; q < Size; q++) {
-                             thirdFile << array[q].getBookName() << endl << array[q].getName() << endl << array[q].getLastName() << endl;
-                             thirdFile << array[q].getPatronymic() << endl << array[q].getPublishingOffice() << endl << array[q].getYear() << endl;
-                         }
-                         cout << "Файл сохранён" << endl;
-                         thirdFile.close();
-                     }
-                     catch (const exception&)
-                     {
-                         cout << "Ошибка...Введите корректный адрес файла" << endl;
-                         continue;
-                     }
-                     
-                 }
-             }
-            case notSaveDate:
-                cout << "Выход..." << endl;
-                break;
-            default:
-                cout << "Такого пункта в меню нет!" << endl;
+            getline(cin, inputValue);
+            if (!(isNumeric(inputValue)))
+            {
+                cout << "Введено не число...попробуй ещё раз!" << endl;
+                continue;
+            }
+            else {
+                thirdChoice = stoi(inputValue);
                 break;
             }
-        } while (thirdFile.is_open()/*thirdChoice != notSaveDate*/);
-    }
+        }
+        switch (thirdChoice) {
+        case saveDataOld:
+            while (true) {
+                cout << "Название файла:" << endl;
+                getline(cin, secondName);
+
+                if (secondName.find(".txt") >= std::string::npos) {
+                    std::cout << "Неправильный тип файла..." << std::endl;
+                    continue;
+                }
+
+                try {
+                    checkFile.open(secondName);
+                    cout << "Файл с таким именем уже существует!" << endl;
+                    cout << "1 - Сохранить в этот файл" << endl;
+                    cout << "2 и другие числа - Ввести новое имя файла" << endl;
+                    while (true)//proverka
+                    {
+                        getline(cin, inputValue);
+                        if (!(isNumeric(inputValue)))
+                        {
+                            cout << "Введено не число...Попробуй ещё раз!" << endl;
+                            continue;
+                        }
+                        else
+                        {
+                            choi = stoi(inputValue);
+                            break;
+                        }
+                    }
+                    if (choi == 1)
+                    {
+                        thirdFile.open(secondName);
+                        thirdFile << Size << endl;;
+                        for (int w = 0; w < Size; w++) {
+                            thirdFile << array[w].getBookName() << endl << array[w].getName() << endl << array[w].getLastName() << endl;
+                            thirdFile << array[w].getPatronymic() << endl << array[w].getPublishingOffice() << endl << array[w].getYear() << endl;
+                        }
+                        cout << "Файл сохранён" << endl;
+                        thirdFile.close();
+                    }
+                    else {
+                        checkFile.close();
+                        cout << "Название нового файла:" << endl;
+                        //cin.get();
+                        getline(cin, thirdFileAdress);
+                        thirdFile.open(thirdFileAdress);
+                        thirdFile << Size << endl;
+                        for (int q = 0; q < Size; q++) {
+                            thirdFile << array[q].getBookName() << endl << array[q].getName() << endl << array[q].getLastName() << endl;
+                            thirdFile << array[q].getPatronymic() << endl << array[q].getPublishingOffice() << endl << array[q].getYear() << endl;
+                        }
+                        cout << "Файл сохранён" << endl;
+                        thirdFile.close();
+                        continue;
+                    };
+                    break;
+                }
+                catch (const exception&)
+                {
+                    try
+                    {
+                        thirdFile.open(secondName);
+                        thirdFile << Size << endl;
+                        for (int q = 0; q < Size; q++) {
+                            thirdFile << array[q].getBookName() << endl << array[q].getName() << endl << array[q].getLastName() << endl;
+                            thirdFile << array[q].getPatronymic() << endl << array[q].getPublishingOffice() << endl << array[q].getYear() << endl;
+                        }
+                        cout << "Файл сохранён" << endl;
+                        thirdFile.close();
+                    }
+                    catch (const exception&)
+                    {
+                        cout << "Ошибка...Введите корректный адрес файла" << endl;
+                        continue;
+                    }
+                }
+            }
+        case notSaveDate:
+            cout << "Выход..." << endl;
+            break;
+        default:
+            cout << "Такого пункта в меню нет!" << endl;
+            break;
+        }
+    } while (thirdChoice != notSaveDate);
+}
+
+  
 void Submenu(Book array[], int Size)
 {
     string inputValue;
